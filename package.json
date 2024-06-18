@@ -7,10 +7,10 @@
   "files": [
     "CHANGELOG.md",
     "build/src/fit-encode.js",
-    "build/src/**/*.d.ts"
+    "build/ts/src/**/*.d.ts"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node build/test/test.js examples/test1.json",
     "build-debug": "node esbuild.mjs",
     "build-release": "node esbuild.mjs --release",
     "prepack": "node esbuild.mjs --release",
@@ -20,7 +20,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.14.4",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
     "esbuild": "^0.21.5",
+    "eslint": "^8.57.0",
     "fit-file-parser": "^1.9.5",
     "typescript": "^5.4.5"
   }

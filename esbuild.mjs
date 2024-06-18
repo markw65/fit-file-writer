@@ -137,7 +137,11 @@ fs.readFile("package.json", "utf-8").then(async (pkg) => {
   };
 
   const mainConfig = {
-    entryPoints: ["src/fit-encode.ts", "tools/generate-fit-tables.ts"],
+    entryPoints: [
+      "src/fit-encode.ts",
+      "tools/generate-fit-tables.ts",
+      "test/test.ts",
+    ],
     bundle: true,
     platform: "node",
     outdir: `${buildDir}`,
