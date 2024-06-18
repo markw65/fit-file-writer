@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "build/ts",
+    "module": "esnext",
+    "target": "esnext",
+    "checkJs": true /* Type check .js files. */,
+    "lib": ["esnext"],
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitReturns": true,
+    "sourceMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "useUnknownInCatchVariables": true,
+    "strict": true,
+    "paths": {
+      "fit-defs": ["./tools/fit-defs.d.ts"]
+    }
+  },
+
+  "include": ["src/**/*.ts", "tools/**/*.ts"],
+  "exclude": [
+    "build",
+    "node_modules",
+    "esbuild.js",
+    "test/projects",
+    "test/OptimizerTests"
+  ]
+}

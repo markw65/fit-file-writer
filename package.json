@@ -1,0 +1,27 @@
+{
+  "name": "@markw65/fit-file-writer",
+  "version": "0.0.1",
+  "description": "Javascript Library for writing FitFiles",
+  "main": "build/src/fit-encode.js",
+  "types": "build/ts/src/fit-encode.d.ts",
+  "files": [
+    "CHANGELOG.md",
+    "build/src/fit-encode.js",
+    "build/src/**/*.d.ts"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-debug": "node esbuild.mjs",
+    "build-release": "node esbuild.mjs --release",
+    "prepack": "node esbuild.mjs --release",
+    "watch": "node esbuild.mjs --watch"
+  },
+  "author": "markw65",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.14.4",
+    "esbuild": "^0.21.5",
+    "fit-file-parser": "^1.9.5",
+    "typescript": "^5.4.5"
+  }
+}
