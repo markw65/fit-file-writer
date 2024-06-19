@@ -39,6 +39,8 @@ type LocalDefinitionField = {
 type LocalDefinition = {
   global: MessageKeys;
   local: number;
+  localCompressed: number;
+  hasTimestamp: boolean;
   fields: LocalDefinitionField[];
   devFields: LocalDefinitionField[];
 };
@@ -103,6 +105,8 @@ function baseTypeInfo(
   }
   return { type, size };
 }
+
+const timestampId = fit_messages.record.fields.timestamp.index;
 export class FitWriter {
   private buffer: DataView;
   private offset = 0;
@@ -115,6 +119,7 @@ export class FitWriter {
     number,
     { base_type: FitBaseTypes; developer_data_index: number }
   >();
+  private lastTimeStamp: number | null | undefined;
 
   private ensureSpace(bytes: number) {
     const newSize = this.offset + bytes;
@@ -355,7 +360,30 @@ export class FitWriter {
     devInfo: FitDevInfo[] | null = null,
     lastUse = false
   ) {
+    const removeDef = (index: number) => {
+      const prevDef = this.localDefs[index];
+      if (prevDef) {
+        const def = this.definitionMap.get(prevDef);
+        if (def) {
+          this.definitionMap.delete(prevDef);
+          this.localDefs[def.local] = "";
+          if (def.localCompressed >= 0) {
+            this.localDefs[def.localCompressed] = "";
+          }
+        }
+        this.localDefs[index] = "";
+      }
+    };
     const globalMessage: FitMessageMap[T] = fit_messages[messageType];
+    const compressedTimestamp =
+      this.lastTimeStamp != null &&
+      globalMessage.fields.timestamp?.index === timestampId &&
+      "timestamp" in messageInfo &&
+      typeof messageInfo.timestamp === "number" &&
+      messageInfo.timestamp >= this.lastTimeStamp &&
+      messageInfo.timestamp - this.lastTimeStamp < 32 &&
+      messageInfo.timestamp;
+
     const keys = keysOf(messageInfo).filter(
       (k) => messageInfo[k as keyof typeof messageInfo] != null
     );
@@ -398,69 +426,75 @@ export class FitWriter {
     let definition = this.definitionMap.get(definitionKey);
     if (!definition) {
       const index = this.nextLocalDef & 15;
-      const prevDef = this.localDefs[index];
-      if (prevDef) {
-        this.definitionMap.delete(prevDef);
-        this.localDefs[index] = "";
-      }
+      removeDef(index);
+      let hasTimestamp = false;
+      const localCompressed =
+        compressedTimestamp && index <= 3 && lastUse ? index : -1;
+      const fields = keys.flatMap((key) => {
+        const field = globalMessage.fields[key];
+        if (!field) {
+          throw new Error(
+            `Didn't find field '${key}' in message '${messageType}'`
+          );
+        }
+        if (field.field === "timestamp" && field.index === timestampId) {
+          hasTimestamp = true;
+          if (localCompressed >= 0) return [];
+        }
+        let size = -1;
+        let base_type: FitBaseTypes | "" = "";
+        const type = fit_types[field.type as FitRawTypes];
+        if (type) {
+          if (type._max <= 0xff) {
+            size = 1;
+            base_type =
+              type._max < 0xff
+                ? "mask" in type
+                  ? "uint8"
+                  : "enum"
+                : type._min >= 1
+                ? "uint8z"
+                : "";
+          } else if (type._max <= 0xffff) {
+            size = 2;
+            base_type = "uint16";
+          } else if (type._max <= 0xffffffff) {
+            size = 4;
+            base_type = "uint32";
+          }
+        } else {
+          ({ type: base_type, size } = baseTypeInfo(
+            field.type,
+            messageInfo[key as keyof typeof messageInfo]
+          ));
+        }
+        if (size < 0) {
+          throw new Error(
+            `Unsupported size for field '${key}' in message '${messageType}'`
+          );
+        }
+        const base_type_index =
+          fit_types.fit_base_type[base_type as FitBaseTypes];
+        if (base_type_index == null) {
+          throw new Error(
+            `Invalid base type '${base_type}' for field '${key}' in message '${messageType}'`
+          );
+        }
+        return {
+          key,
+          size,
+          base_type,
+          info: [field.index, size, base_type_index],
+        } satisfies LocalDefinitionField;
+      });
       definition = {
         global: messageType,
         local: index,
-        fields: keys.map((key) => {
-          const field = globalMessage.fields[key];
-          if (!field) {
-            throw new Error(
-              `Didn't find field '${key}' in message '${messageType}'`
-            );
-          }
-          let size = -1;
-          let base_type: FitBaseTypes | "" = "";
-          const type = fit_types[field.type as FitRawTypes];
-          if (type) {
-            if (type._max <= 0xff) {
-              size = 1;
-              base_type =
-                type._max < 0xff
-                  ? "mask" in type
-                    ? "uint8"
-                    : "enum"
-                  : type._min >= 1
-                  ? "uint8z"
-                  : "";
-            } else if (type._max <= 0xffff) {
-              size = 2;
-              base_type = "uint16";
-            } else if (type._max <= 0xffffffff) {
-              size = 4;
-              base_type = "uint32";
-            }
-          } else {
-            ({ type: base_type, size } = baseTypeInfo(
-              field.type,
-              messageInfo[key as keyof typeof messageInfo]
-            ));
-          }
-          if (size < 0) {
-            throw new Error(
-              `Unsupported size for field '${key}' in message '${messageType}'`
-            );
-          }
-          const base_type_index =
-            fit_types.fit_base_type[base_type as FitBaseTypes];
-          if (base_type_index == null) {
-            throw new Error(
-              `Invalid base type '${base_type}' for field '${key}' in message '${messageType}'`
-            );
-          }
-          return {
-            key,
-            size,
-            base_type,
-            info: [field.index, size, base_type_index],
-          };
-        }),
+        localCompressed,
+        hasTimestamp,
+        fields,
         devFields:
-          devInfo?.map((d) => {
+          devInfo?.flatMap((d) => {
             const fieldInfo = this.devFieldTypes.get(d.field_num);
             if (fieldInfo == null) {
               throw new Error(
@@ -486,7 +520,30 @@ export class FitWriter {
         definition.devFields.map((f) => f.info)
       );
     }
-    this.byte(definition.local);
+    if (compressedTimestamp) {
+      if (definition.localCompressed < 0) {
+        if (messageType === "record") {
+          let local = this.nextLocalDef < 4 ? this.nextLocalDef : 0;
+          if (local === definition.local) local = (local + 1) & 3;
+          removeDef(local);
+          definition.localCompressed = local;
+          this.localDefs[local] = definitionKey;
+          this.definition(
+            local,
+            globalMessage.value,
+            definition.fields
+              .map((f) => f.info)
+              .filter((f) => f[0] !== timestampId),
+            definition.devFields.map((f) => f.info)
+          );
+        }
+      }
+    }
+    const header =
+      compressedTimestamp && definition.localCompressed >= 0
+        ? 128 + (definition.localCompressed << 5) + (compressedTimestamp & 31)
+        : definition.local;
+    this.byte(header);
     if (messageType === "field_description") {
       const fieldDescMessage = messageInfo as Partial<
         FitMessageInputs["field_description"]
@@ -519,6 +576,12 @@ export class FitWriter {
     }
     definition.fields.forEach((defField) => {
       const value = messageInfo[defField.key as keyof typeof messageInfo];
+      if (definition.hasTimestamp && defField.key === "timestamp") {
+        if (header & 128) {
+          return;
+        }
+        this.lastTimeStamp = value as number | null;
+      }
       const field = globalMessage.fields[defField.key];
       this.writeFieldValue(
         defField,
@@ -539,8 +602,7 @@ export class FitWriter {
       this.writeFieldValue(defField, info.value, ft.base_type, null, null);
     });
     if (lastUse) {
-      this.definitionMap.delete(definitionKey);
-      this.localDefs[definition.local] = "";
+      removeDef(definition.local);
       if (((definition.local + 1) & 15) === this.nextLocalDef) {
         this.nextLocalDef = definition.local;
       }
