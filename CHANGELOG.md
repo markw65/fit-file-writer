@@ -2,6 +2,10 @@
 
 All notable changes to the "@markw65/fit-file-writer" package will be documented in this file.
 
+### 0.1.1
+
+- Add compressed timestamp support
+
 ### 0.1.0
 
 - First package release
