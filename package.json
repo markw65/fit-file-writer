@@ -25,5 +25,18 @@
     "eslint": "^8.57.0",
     "fit-file-parser": "^1.9.5",
     "typescript": "^5.4.5"
+  },
+  "keywords": [
+    "fit",
+    "ant",
+    "garmin"
+  ],
+  "bugs": {
+    "url": "https://github.com/markw65/fit-file-writer/issues"
+  },
+  "homepage": "https://github.com/markw65/fit-file-writer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markw65/fit-file-writer.git"
   }
 }
