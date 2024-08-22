@@ -222,7 +222,12 @@ function compare(name: string, json: ParsedJSON[], fit: FitFile) {
         } null`
       );
     }
-    if (a !== b && Math.abs(a - b) / (Math.abs(a) + Math.abs(b)) > delta) {
+    if (
+      a !== b &&
+      (delta < 0
+        ? !(Math.abs(a - b) <= -delta)
+        : !(Math.abs(a - b) / (Math.abs(a) + Math.abs(b)) <= delta))
+    ) {
       throw new Error(
         delta === 0
           ? `${name}: ${msg}: ${a} != ${b}`
@@ -238,7 +243,7 @@ function compare(name: string, json: ParsedJSON[], fit: FitFile) {
     if (!js || !ft) {
       throw new Error(`Missing element at i=${i}`);
     }
-    check(+js.time, +ft.timestamp, 1000, "Timestamp mismatch");
+    check(+js.time, +ft.timestamp, -1000, "Timestamp mismatch");
     check(js.ele, ft.altitude, epsilon, "Altitude mismatch");
     check(js.dist, ft.distance, epsilon, "Distance mismatch");
     check(js.cad, ft.cadence / 60, epsilon, "Cadence mismatch");

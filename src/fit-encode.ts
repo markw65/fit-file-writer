@@ -134,7 +134,7 @@ export class FitWriter {
     this.buffer = new DataView(dst.buffer);
   }
 
-  constructor() {
+  constructor(private noCompressedTimestamps = true) {
     this.buffer = new DataView(new ArrayBuffer(0x4000));
     this.crc = 0;
     this.file_header();
@@ -235,7 +235,7 @@ export class FitWriter {
   // Garmin timestamp
   time(t: number | Date): number {
     // garmin time stamps are offset from unix time stamps...
-    return +t / 1000 - 631065600;
+    return Math.round(+t / 1000 - 631065600);
   }
 
   // Convert a latitude or longitude in radians to
@@ -376,6 +376,7 @@ export class FitWriter {
     };
     const globalMessage: FitMessageMap[T] = fit_messages[messageType];
     const compressedTimestamp =
+      !this.noCompressedTimestamps &&
       this.lastTimeStamp != null &&
       globalMessage.fields.timestamp?.index === timestampId &&
       "timestamp" in messageInfo &&
