@@ -386,7 +386,8 @@ export class FitWriter {
       messageInfo.timestamp;
 
     const keys = keysOf(messageInfo).filter(
-      (k) => messageInfo[k as keyof typeof messageInfo] != null
+      (k): k is NonNullable<typeof k> =>
+        messageInfo[k as keyof typeof messageInfo] != null
     );
     keys.sort((a, b) => {
       const va = globalMessage.fields[a].index;
