@@ -140,6 +140,8 @@ export const fit_types = {
     dive_summary: 268,
     jump: 285,
     climb_pro: 317,
+    tank_pressure: 319,
+    tank_summary: 323,
     mfg_range_min: 65280,
     mfg_range_max: 65534,
     _min: 0,
@@ -709,8 +711,11 @@ export const fit_types = {
     rest: 1,
     warmup: 2,
     cooldown: 3,
+    recovery: 4,
+    interval: 5,
+    other: 6,
     _min: 0,
-    _max: 3,
+    _max: 6,
   },
   session_trigger: {
     activity_end: 0,
@@ -9137,6 +9142,72 @@ export const fit_messages = {
       },
     },
   },
+  tank_update: {
+    value: 319,
+    fields: {
+      sensor: {
+        index: 0,
+        field: "sensor",
+        type: "uint32",
+        scale: null,
+        offset: 0,
+        units: "",
+      },
+      pressure: {
+        index: 1,
+        field: "pressure",
+        type: "uint16",
+        scale: null,
+        offset: 0,
+        units: "cbar",
+      },
+      timestamp: {
+        index: 253,
+        field: "timestamp",
+        type: "date_time",
+        scale: null,
+        offset: 0,
+        units: "s",
+      },
+    },
+  },
+  tank_summary: {
+    value: 323,
+    fields: {
+      sensor: {
+        index: 0,
+        field: "sensor",
+        type: "uint32",
+        scale: null,
+        offset: 0,
+        units: "",
+      },
+      start_pressure: {
+        index: 1,
+        field: "start_pressure",
+        type: "uint16",
+        scale: null,
+        offset: 0,
+        units: "cbar",
+      },
+      end_pressure: {
+        index: 2,
+        field: "end_pressure",
+        type: "uint16",
+        scale: null,
+        offset: 0,
+        units: "cbar",
+      },
+      volume_used: {
+        index: 3,
+        field: "volume_used",
+        type: "uint16",
+        scale: null,
+        offset: 0,
+        units: "cbar",
+      },
+    },
+  },
 } as const satisfies FitMessageMap;
 
 export type FitMessageInputs = {
@@ -10321,7 +10392,14 @@ export type FitMessageInputs = {
     max_power: number;
     total_ascent: number;
     total_descent: number;
-    intensity: "active" | "rest" | "warmup" | "cooldown";
+    intensity:
+      | "active"
+      | "rest"
+      | "warmup"
+      | "cooldown"
+      | "recovery"
+      | "interval"
+      | "other";
     lap_trigger:
       | "manual"
       | "time"
@@ -11061,7 +11139,14 @@ export type FitMessageInputs = {
     target_value: number;
     custom_target_value_low: number;
     custom_target_value_high: number;
-    intensity: "active" | "rest" | "warmup" | "cooldown";
+    intensity:
+      | "active"
+      | "rest"
+      | "warmup"
+      | "cooldown"
+      | "recovery"
+      | "interval"
+      | "other";
     message_index: { value: number; options?: ("reserved" | "selected")[] };
   };
   weight_scale: {
@@ -11447,6 +11532,8 @@ export type FitMessageInputs = {
       | "dive_summary"
       | "jump"
       | "climb_pro"
+      | "tank_pressure"
+      | "tank_summary"
       | "mfg_range_min"
       | "mfg_range_max";
     count_type: "num_per_file" | "max_per_file" | "max_per_file_type";
@@ -11563,6 +11650,8 @@ export type FitMessageInputs = {
       | "dive_summary"
       | "jump"
       | "climb_pro"
+      | "tank_pressure"
+      | "tank_summary"
       | "mfg_range_min"
       | "mfg_range_max";
     field_num: number;
@@ -12134,6 +12223,8 @@ export type FitMessageInputs = {
       | "dive_summary"
       | "jump"
       | "climb_pro"
+      | "tank_pressure"
+      | "tank_summary"
       | "mfg_range_min"
       | "mfg_range_max";
     reference_index: { value: number; options?: ("reserved" | "selected")[] };
@@ -12148,5 +12239,16 @@ export type FitMessageInputs = {
     dive_number: number;
     bottom_time: number;
     timestamp: number;
+  };
+  tank_update: {
+    sensor: number;
+    pressure: number;
+    timestamp: number;
+  };
+  tank_summary: {
+    sensor: number;
+    start_pressure: number;
+    end_pressure: number;
+    volume_used: number;
   };
 };
