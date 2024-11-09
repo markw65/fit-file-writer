@@ -13,6 +13,7 @@ type ParsedJSON = {
   speed: number;
   power?: number;
   wind?: number;
+  cl16?: number;
 };
 
 function parseFit(data: DataView) {
@@ -70,6 +71,7 @@ function parseJson(rawJson: string): ParsedJSON[] {
       speed: get_num(e.speed),
       power: e.power == null ? undefined : get_num(e.power),
       wind: e.wind == null ? undefined : get_num(e.wind),
+      cl16: get_num(e.cl16),
     } as const;
   });
 }
@@ -175,6 +177,7 @@ function makeFit(parsed: ParsedJSON[]) {
     const heart_rate = v.hr;
     const position_long = fitWriter.latlng(v.lng);
     const position_lat = fitWriter.latlng(v.lat);
+    const cycle_length16 = v.cl16;
     const devInfo: FitDevInfo[] =
       v.wind != null
         ? [
@@ -197,6 +200,7 @@ function makeFit(parsed: ParsedJSON[]) {
         heart_rate: heart_rate && heart_rate * 60,
         position_lat,
         position_long,
+        cycle_length16,
       },
       devInfo
     );
@@ -262,7 +266,9 @@ function compare(name: string, json: ParsedJSON[], fit: FitFile) {
     );
     check(js.speed, ft.speed, epsilon, "Speed mismatch");
     check(js.power, ft.power, epsilon, "Power mismatch");
-    check(js.wind, ft.Wind, epsilon, "Power mismatch");
+    check(js.wind, ft.Wind, epsilon, "Wind mismatch");
+    // can't check cycle_length16, because fit-file-reader doesn't support it
+    // check(js.cl16, ft.cycle_length16, epsilon, "Wind mismatch");
   });
 }
 

@@ -7029,6 +7029,14 @@ export const fit_messages = {
         offset: 0,
         units: "mm",
       },
+      cycle_length16: {
+        index: 87,
+        field: "cycle_length16",
+        type: "uint16",
+        scale: 100,
+        offset: 0,
+        units: "m",
+      },
       absolute_pressure: {
         index: 91,
         field: "absolute_pressure",
@@ -10685,6 +10693,7 @@ export type FitMessageInputs = {
     vertical_ratio: number;
     stance_time_balance: number;
     step_length: number;
+    cycle_length16: number;
     absolute_pressure: number;
     depth: number;
     next_stop_depth: number;
