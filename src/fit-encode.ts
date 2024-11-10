@@ -1,4 +1,5 @@
 import {
+  ExtFitField,
   FitBaseTypes,
   FitExtraTypes,
   FitMessageInputs,
@@ -47,33 +48,37 @@ type LocalDefinition = {
 
 function baseTypeInfo(
   type: FitExtraTypes,
-  value: unknown
+  value: unknown,
+  field?: ExtFitField
 ): { type: FitBaseTypes; size: number } {
+  let isArray = field?.array === "true";
   let size;
+  if (field?.hasComponents && field.components.length >= 2) {
+    size = field.bits.reduce((t, b) => t + b, 0);
+    isArray = false;
+    if (size & 7) {
+      throw new Error(`Invalid bit-size ${size} for component bit field`);
+    }
+    if (!Array.isArray(value)) {
+      throw new Error(`Wanted an array for component field, but got ${value}`);
+    }
+    size >>= 3;
+    switch (type) {
+      case "byte":
+      case "uint8":
+      case "uint16":
+      case "uint32":
+        return { type, size };
+    }
+    throw new Error(`Unexpected type '${type}' for component field`);
+  }
   switch (type) {
     case "string": {
       if (typeof value !== "string") {
         throw new Error(`string without a length`);
       }
       size = value.length;
-      break;
-    }
-    case "byte_array":
-    case "uint16_array":
-    case "uint32_array": {
-      if (!Array.isArray(value)) {
-        throw new Error(`expected an array`);
-      }
-      size = value.length;
-      if (type === "byte_array") {
-        type = "byte";
-      } else if (type === "uint16_array") {
-        type = "uint16";
-        size *= 2;
-      } else {
-        type = "uint32";
-        size *= 4;
-      }
+      isArray = false;
       break;
     }
     case "sint8":
@@ -101,12 +106,24 @@ function baseTypeInfo(
       size = 8;
       break;
     default:
-      throw new Error(`Unsupported base type '${type}'`);
+      throw new Error(`Unexpected fit type ${type}`);
+  }
+  if (isArray) {
+    if (!Array.isArray(value)) {
+      throw new Error(`expected an array`);
+    }
+    size *= value.length;
   }
   return { type, size };
 }
 
-const timestampId = fit_messages.record.fields.timestamp.index;
+const timestampId = fit_messages.record.fields.timestamp.num;
+
+export type FitWriterOptions = {
+  noCompressedTimestamps?: boolean;
+  usePreferredRecords?: boolean;
+};
+
 export class FitWriter {
   private buffer: DataView;
   private offset = 0;
@@ -120,7 +137,7 @@ export class FitWriter {
     { base_type: FitBaseTypes; developer_data_index: number }
   >();
   private lastTimeStamp: number | null | undefined;
-
+  private options: FitWriterOptions;
   private ensureSpace(bytes: number) {
     const newSize = this.offset + bytes;
     if (this.buffer.byteLength >= newSize) return;
@@ -134,7 +151,12 @@ export class FitWriter {
     this.buffer = new DataView(dst.buffer);
   }
 
-  constructor(private noCompressedTimestamps = true) {
+  constructor(options?: FitWriterOptions | boolean) {
+    if (options === true || options === false) {
+      this.options = { noCompressedTimestamps: options };
+    } else {
+      this.options = options ?? { noCompressedTimestamps: true };
+    }
     this.buffer = new DataView(new ArrayBuffer(0x4000));
     this.crc = 0;
     this.file_header();
@@ -266,9 +288,62 @@ export class FitWriter {
     defField: LocalDefinitionField,
     value: unknown,
     type: FitExtraTypes,
-    scale: number | null,
-    offset: number | null
+    field: ExtFitField | null
   ) {
+    if (field?.hasComponents && field.components.length > 1) {
+      const aval = value;
+      if (!Array.isArray(aval)) {
+        throw new Error(
+          `Expected array of components for field '${field.name}', but got ${value}`
+        );
+      }
+      let packed = 0n;
+      let nbits = 0;
+      for (let i = field.components.length; i--; ) {
+        const bits = field.bits[i];
+        const scale = Array.isArray(field.scale) ? field.scale[i] : null;
+        const offset = Array.isArray(field.offset) ? field.offset[i] : null;
+        if (bits == null || scale == null || offset == null) {
+          throw new Error(
+            `Inconsistent component definition for field '${field.name}'`
+          );
+        }
+        const v = aval[i];
+        if (typeof v !== "number") {
+          throw new Error(`Expected a numeric components, but got: ${v}`);
+        }
+        packed <<= BigInt(bits);
+        packed |= BigInt(((v + offset) * scale) & ((1 << bits) - 1));
+        nbits += bits;
+      }
+      let size = 0;
+      switch (defField.base_type) {
+        case "byte":
+        case "uint8":
+          size = 8;
+          break;
+        case "uint16":
+          size = 16;
+          break;
+        case "uint32":
+          size = 32;
+          break;
+        default:
+          throw new Error(
+            `Unexpected base_type '${defField.base_type}' for component field`
+          );
+      }
+      if (nbits % size) {
+        throw new Error(`bit size must be a multiple of ${size}`);
+      }
+      value = Array(nbits / size)
+        .fill(0)
+        .map(() => {
+          const v = Number(packed & ((1n << BigInt(size)) - 1n));
+          packed >>= BigInt(size);
+          return v;
+        });
+    }
     if (type === "string") {
       if (typeof value !== "string" || value.length !== defField.size) {
         throw new Error(
@@ -279,6 +354,30 @@ export class FitWriter {
       return;
     }
     if (Array.isArray(value)) {
+      let size = -1;
+      switch (defField.base_type) {
+        case "byte":
+          size = 1;
+          break;
+        case "word":
+          size = 2;
+          break;
+        case "long":
+          size = 4;
+          break;
+        default:
+          throw new Error(
+            `Unexpected base type for array: ${defField.base_type}`
+          );
+      }
+      if (defField.size !== size * value.length) {
+        throw new Error(
+          `Array mismatch. Expected array of length ${
+            defField.size / size
+          }, but got: ${value.length}`
+        );
+      }
+
       value.forEach((v) => {
         switch (defField.base_type) {
           case "byte":
@@ -321,8 +420,10 @@ export class FitWriter {
     } else {
       throw new Error(`Unexpected field/value types`);
     }
-    if (scale != null) {
-      num = (num - (offset ?? 0)) * scale;
+    if (field != null) {
+      num =
+        (num + (Array.isArray(field.offset) ? field.offset[0] : field.offset)) *
+        (Array.isArray(field.scale) ? field.scale[0] : field.scale);
     }
     if (defField.base_type.startsWith("float")) {
       if (defField.size === 4) {
@@ -350,6 +451,30 @@ export class FitWriter {
     throw new Error(`Unsupported size: ${defField.size}`);
   }
 
+  getPreferredField(message: FitMessageMap[string], key: string) {
+    const field = message.fields[key];
+    if (!field) {
+      throw new Error(
+        `Didn't find field '${key}' in message '${message.name}'`
+      );
+    }
+    if (
+      !this.options.usePreferredRecords ||
+      !field.hasComponents ||
+      field.components.length !== 1
+    ) {
+      return field;
+    }
+    const f = Object.values(message.fields).find(
+      (f) => f.num === field.components[0]
+    );
+    if (!f) {
+      throw new Error(
+        `Didn't find preferred field for '${message.name}:${field.name}`
+      );
+    }
+    return f;
+  }
   // write a message to the file. If a local definition doesn't
   // exist for this message, create one.
   // If lastUse is true, the local definition will be discarded
@@ -376,9 +501,9 @@ export class FitWriter {
     };
     const globalMessage: FitMessageMap[T] = fit_messages[messageType];
     const compressedTimestamp =
-      !this.noCompressedTimestamps &&
+      !this.options.noCompressedTimestamps &&
       this.lastTimeStamp != null &&
-      globalMessage.fields.timestamp?.index === timestampId &&
+      globalMessage.fields.timestamp?.num === timestampId &&
       "timestamp" in messageInfo &&
       typeof messageInfo.timestamp === "number" &&
       messageInfo.timestamp >= this.lastTimeStamp &&
@@ -390,33 +515,29 @@ export class FitWriter {
         messageInfo[k as keyof typeof messageInfo] != null
     );
     keys.sort((a, b) => {
-      const va = globalMessage.fields[a].index;
-      const vb = globalMessage.fields[b].index;
+      const va = globalMessage.fields[a].num;
+      const vb = globalMessage.fields[b].num;
       return va - vb;
     });
     const definitionKey = `${messageType}:${keys
       .map((k) => {
         let result = k as string;
-        switch (globalMessage.fields[k]?.type) {
-          case "string":
-            {
-              const value = messageInfo[k as keyof typeof messageInfo];
+        const field = globalMessage.fields[k];
+        if (!field.hasComponents || field.components.length <= 1) {
+          if (field?.array === "true") {
+            const value = messageInfo[k as keyof typeof messageInfo];
+            if (field?.type === "string") {
               if (typeof value !== "string") {
                 throw new Error(
                   `Expected a string value for ${messageType}:${k} but got ${typeof value}`
                 );
               }
-              result += `:${value.length}`;
-            }
-            break;
-          case "byte_array":
-          case "uint16_array":
-          case "uint32_array": {
-            const value = messageInfo[k as keyof typeof messageInfo];
-            if (!Array.isArray(value)) {
-              throw new Error(
-                `Expected an array value for ${messageType}:${k} but got ${typeof value}`
-              );
+            } else {
+              if (!Array.isArray(value)) {
+                throw new Error(
+                  `Expected an array value for ${messageType}:${k} but got ${typeof value}`
+                );
+              }
             }
             result += `:${value.length}`;
           }
@@ -433,13 +554,8 @@ export class FitWriter {
       const localCompressed =
         compressedTimestamp && index <= 3 && lastUse ? index : -1;
       const fields = keys.flatMap((key) => {
-        const field = globalMessage.fields[key];
-        if (!field) {
-          throw new Error(
-            `Didn't find field '${key}' in message '${messageType}'`
-          );
-        }
-        if (field.field === "timestamp" && field.index === timestampId) {
+        const field = this.getPreferredField(globalMessage, key);
+        if (field.name === "timestamp" && field.num === timestampId) {
           hasTimestamp = true;
           if (localCompressed >= 0) return [];
         }
@@ -467,7 +583,8 @@ export class FitWriter {
         } else {
           ({ type: base_type, size } = baseTypeInfo(
             field.type,
-            messageInfo[key as keyof typeof messageInfo]
+            messageInfo[key as keyof typeof messageInfo],
+            field
           ));
         }
         if (size < 0) {
@@ -486,7 +603,7 @@ export class FitWriter {
           key,
           size,
           base_type,
-          info: [field.index, size, base_type_index],
+          info: [field.num, size, base_type_index],
         } satisfies LocalDefinitionField;
       });
       definition = {
@@ -584,14 +701,8 @@ export class FitWriter {
         }
         this.lastTimeStamp = value as number | null;
       }
-      const field = globalMessage.fields[defField.key];
-      this.writeFieldValue(
-        defField,
-        value,
-        field.type,
-        field.scale,
-        field.offset
-      );
+      const field = this.getPreferredField(globalMessage, defField.key);
+      this.writeFieldValue(defField, value, field.type, field);
     });
     definition.devFields.forEach((defField, index) => {
       const info = devInfo![index];
@@ -601,7 +712,7 @@ export class FitWriter {
           `Missing definition for developer field ${info.field_num}`
         );
       }
-      this.writeFieldValue(defField, info.value, ft.base_type, null, null);
+      this.writeFieldValue(defField, info.value, ft.base_type, null);
     });
     if (lastUse) {
       removeDef(definition.local);

@@ -193,8 +193,9 @@ function makeFit(parsed: ParsedJSON[]) {
       {
         power,
         timestamp,
-        speed,
-        distance,
+        compressed_speed_distance: [speed, distance],
+        //speed,
+        //distance,
         altitude,
         cadence: cadence && cadence * 60,
         heart_rate: heart_rate && heart_rate * 60,

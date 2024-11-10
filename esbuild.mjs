@@ -156,9 +156,6 @@ fs.readFile("package.json", "utf-8").then(async (pkg) => {
     minify: releaseBuild,
     logLevel: "silent",
     treeShaking: true,
-    alias: {
-      "fit-defs": "./node_modules/fit-file-parser/dist/fit.js",
-    },
   };
   if (process.argv.includes("--watch")) {
     const mainCtx = await esbuild.context(mainConfig);

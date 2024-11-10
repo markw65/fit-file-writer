@@ -13,10 +13,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "useUnknownInCatchVariables": true,
-    "strict": true,
-    "paths": {
-      "fit-defs": ["./tools/fit-defs.d.ts"]
-    }
+    "strict": true
   },
 
   "include": ["src/**/*.ts", "tools/**/*.ts", "test/**/*.ts"],
