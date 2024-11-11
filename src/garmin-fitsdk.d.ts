@@ -19,6 +19,25 @@ declare module "@garmin/fitsdk" {
     subFields: SubField[];
   }
 
+  export class Stream {
+    constructor(buffer: ArrayBuffer);
+  }
+  export class Decoder {
+    constructor(stream: Stream);
+    isFit(): boolean;
+    checkIntegrity(): boolean;
+    read(options?: {
+      mesgListener?: (mesgNum: number, message: unknown) => void;
+      expandSubFields?: boolean;
+      expandComponents?: boolean;
+      applyScaleAndOffset?: boolean;
+      convertTypesToStrings?: boolean;
+      convertDateTimesToDates?: boolean;
+      includeUnknownData?: boolean;
+      mergeHeartRates?: boolean;
+    }): { messages: Record<string, unknown>; errors: unknown[] };
+  }
+
   export const Profile: {
     types: Record<string, Record<number, string | number>>;
     messages: Record<

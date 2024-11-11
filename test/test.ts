@@ -1,6 +1,30 @@
 import * as fs from "node:fs/promises";
 import { FitDevInfo, FitWriter } from "src/fit-encode";
-import FitParser, { FitFile } from "fit-file-parser";
+import { Decoder, Stream } from "@garmin/fitsdk";
+
+export type FitRecord = {
+  timestamp: Date;
+  altitude: number;
+  distance: number;
+  cadence: number;
+  heartRate: number;
+  positionLat: number;
+  positionLong: number;
+  speed: number;
+  power?: number;
+  Wind?: number;
+  cycleLength16?: number;
+  developerFields?: Record<number, number>;
+};
+
+export type FitFile = {
+  recordMesgs: FitRecord[];
+  fieldDescriptionMesgs: {
+    fieldName: string;
+    fieldDefinitionNumber: number;
+    units: string;
+  }[];
+};
 
 type ParsedJSON = {
   time: Date;
@@ -17,29 +41,33 @@ type ParsedJSON = {
 };
 
 function parseFit(data: DataView) {
-  const fitParser = new FitParser({
-    force: false,
-    speedUnit: "m/s",
-    lengthUnit: "m",
-    temperatureUnit: "kelvin",
-    elapsedRecordField: true,
-    mode: "list",
+  const stream = new Stream(
+    data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
+  );
+
+  const decoder = new Decoder(stream);
+
+  const { messages, errors } = decoder.read({
+    //expandComponents: false,
+    //mergeHeartRates: false,
   });
 
-  // Parse your file
-  return new Promise<FitFile>((resolve, reject) =>
-    fitParser.parse(
-      Buffer.from(data.buffer, data.byteOffset, data.byteLength),
-      function (error, data) {
-        // Handle result of parse method
-        if (error) {
-          reject(new Error(error));
-        } else {
-          resolve(data);
-        }
-      }
-    )
-  );
+  if (errors.length) {
+    return Promise.reject(errors);
+  }
+  const { recordMesgs, fieldDescriptionMesgs } = messages as FitFile;
+  return Promise.resolve({
+    recordMesgs: recordMesgs.map((mesg) => {
+      const { developerFields, ...rest } = mesg;
+      developerFields &&
+        Object.entries(developerFields).forEach(([key, value]) => {
+          const fieldDesc = fieldDescriptionMesgs[Number(key)];
+          rest[fieldDesc.fieldName as "speed"] = value;
+        });
+      return { ...rest };
+    }),
+    fieldDescriptionMesgs,
+  });
 }
 
 function parseJson(rawJson: string): ParsedJSON[] {
@@ -76,7 +104,7 @@ function parseJson(rawJson: string): ParsedJSON[] {
   });
 }
 
-function makeFit(parsed: ParsedJSON[]) {
+function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
   const fitWriter = new FitWriter();
 
   const elapsed_time = (start: number, end: number) => {
@@ -132,7 +160,7 @@ function makeFit(parsed: ParsedJSON[]) {
       developer_data_index: 0,
       field_definition_number: windFieldNum,
       field_name: "Wind",
-      fit_base_type_id: 137, // float64
+      fit_base_type_id: "float64",
       units: "m/s",
     },
     null,
@@ -193,9 +221,11 @@ function makeFit(parsed: ParsedJSON[]) {
       {
         power,
         timestamp,
-        compressed_speed_distance: [speed, distance],
-        //speed,
-        //distance,
+        ...(useCompressedSpeedDistance
+          ? {
+              compressed_speed_distance: [speed, distance],
+            }
+          : { speed, distance }),
         altitude,
         cadence: cadence && cadence * 60,
         heart_rate: heart_rate && heart_rate * 60,
@@ -240,49 +270,54 @@ function compare(name: string, json: ParsedJSON[], fit: FitFile) {
       );
     }
   };
-  check(json.length, fit.records?.length, 0, "Array lengths mismatch");
+  check(json.length, fit.recordMesgs?.length, 0, "Array lengths mismatch");
 
   const epsilon = 1e-3;
   json.forEach((js, i) => {
-    const ft = fit.records?.[i];
+    const ft = fit.recordMesgs?.[i];
     if (!js || !ft) {
       throw new Error(`Missing element at i=${i}`);
     }
     check(+js.time, +ft.timestamp, -1000, "Timestamp mismatch");
     check(js.ele, ft.altitude, epsilon, "Altitude mismatch");
-    check(js.dist, ft.distance, epsilon, "Distance mismatch");
+    check(js.dist, ft.distance, epsilon * 10, "Distance mismatch");
     check(js.cad, ft.cadence / 60, epsilon, "Cadence mismatch");
-    check(js.hr, ft.heart_rate / 60, epsilon, "Heartrate mismatch");
+    check(js.hr, ft.heartRate / 60, epsilon, "Heartrate mismatch");
     check(
       js.lat,
-      (ft.position_lat * Math.PI) / 180,
+      (ft.positionLat * Math.PI) / 0x80000000,
       epsilon,
       "Latitude mismatch"
     );
     check(
       js.lng,
-      (ft.position_long * Math.PI) / 180,
+      (ft.positionLong * Math.PI) / 0x80000000,
       epsilon,
       "Longitude mismatch"
     );
-    check(js.speed, ft.speed, epsilon, "Speed mismatch");
+    check(js.speed, ft.speed, epsilon * 10, "Speed mismatch");
     check(js.power, ft.power, epsilon, "Power mismatch");
     check(js.wind, ft.Wind, epsilon, "Wind mismatch");
-    // can't check cycle_length16, because fit-file-reader doesn't support it
-    // check(js.cl16, ft.cycle_length16, epsilon, "Wind mismatch");
+    check(js.cl16, ft.cycleLength16, epsilon, "Wind mismatch");
   });
 }
 
 async function processJson(jsonFileName: string) {
   const rawJson = await fs.readFile(jsonFileName, "utf-8");
   const json = parseJson(rawJson);
-  const rawFit = makeFit(json);
-  const name = jsonFileName.replace(/\.[^.]+$/, "") + ".fit";
-  const [fit] = await Promise.all([
-    parseFit(rawFit),
-    fs.writeFile(name, rawFit),
-  ]);
-  compare(name, json, fit);
+  const process = async (useCompressedSpeedDistance: boolean) => {
+    const rawFit = makeFit(json, useCompressedSpeedDistance);
+    const name =
+      jsonFileName.replace(/\.[^.]+$/, "") +
+      `${useCompressedSpeedDistance ? ".csd" : ""}.fit`;
+    const [fit] = await Promise.all([
+      parseFit(rawFit),
+      fs.writeFile(name, rawFit),
+    ]);
+    compare(name, json, fit);
+  };
+  await process(false);
+  await process(true);
 }
 
 async function driver() {

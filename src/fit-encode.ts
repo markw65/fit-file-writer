@@ -667,10 +667,13 @@ export class FitWriter {
       const fieldDescMessage = messageInfo as Partial<
         FitMessageInputs["field_description"]
       >;
-      const type_id = fieldDescMessage["fit_base_type_id"];
-      const base_type = Object.entries(fit_types.fit_base_type).find(
-        ([, v]) => v === type_id
-      );
+      const type_id = fieldDescMessage.fit_base_type_id;
+      const base_type =
+        typeof type_id === "string" && type_id in fit_types.fit_base_type
+          ? type_id
+          : (Object.entries(fit_types.fit_base_type).find(
+              ([, v]) => v === type_id
+            )?.[0] as FitBaseTypes);
       if (base_type == null) {
         throw new Error(
           `Missing fit_base_type_id in developer field_description`
@@ -689,7 +692,7 @@ export class FitWriter {
         );
       }
       this.devFieldTypes.set(field_no, {
-        base_type: base_type[0] as FitBaseTypes,
+        base_type,
         developer_data_index,
       });
     }
