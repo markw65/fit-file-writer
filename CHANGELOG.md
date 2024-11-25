@@ -4,7 +4,7 @@ All notable changes to the "@markw65/fit-file-writer" package will be documented
 
 ### 0.1.4
 
-- Use Garmin's javascript sdk as the basis for generating our tables
+- Use Garmin's javascript sdk, rather than fit-file-parser, as the basis for generating our tables
 
   - this ensures that we support all fields
   - allowed me to add support for fields with multiple components, and to automatically substitute "preferred" fields, such as `enhanced_speed` for `speed` (under a new option, `usePreferredFields`)
