@@ -22,7 +22,7 @@ type MessageKeys = keyof FitMessages;
 
 export type FitDevInfo = {
   field_num: number;
-  value: number;
+  value: number | string;
 };
 
 const crc_table = [
