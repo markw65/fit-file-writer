@@ -253,6 +253,15 @@ export class FitWriter {
     return this;
   }
 
+  private dev_field_key(field_num: number, value: number | string) {
+    const fieldInfo = this.devFieldTypes.get(field_num);
+    if (fieldInfo == null) {
+      throw new Error(`Missing definition for developer field ${field_num}`);
+    }
+    const { size } = baseTypeInfo(fieldInfo.base_type, value);
+    return `dev-field-${field_num}-${size}`;
+  }
+
   // Convert a JS Date, or it's numerical representation to a
   // Garmin timestamp
   time(t: number | Date): number {
@@ -544,7 +553,11 @@ export class FitWriter {
         }
         return result;
       })
-      .concat(devInfo?.map((info) => `dev-field-${info.field_num}`) ?? [])
+      .concat(
+        devInfo?.map((info) =>
+          this.dev_field_key(info.field_num, info.value)
+        ) ?? []
+      )
       .join("*")}`;
     let definition = this.definitionMap.get(definitionKey);
     if (!definition) {
