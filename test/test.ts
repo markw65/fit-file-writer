@@ -13,6 +13,7 @@ export type FitRecord = {
   speed: number;
   power?: number;
   Wind?: number;
+  devstr?: string;
   cycleLength16?: number;
   developerFields?: Record<number, number>;
 };
@@ -38,6 +39,7 @@ type ParsedJSON = {
   power?: number;
   wind?: number;
   cl16?: number;
+  devstr?: string;
 };
 
 function parseFit(data: DataView) {
@@ -87,6 +89,12 @@ function parseJson(rawJson: string): ParsedJSON[] {
     }
     return v;
   };
+  const get_str = (v: unknown) => {
+    if (typeof v !== "string") {
+      throw new Error("Expected a number");
+    }
+    return v;
+  };
   return parsed.map((e) => {
     return {
       time: get_time(e.time),
@@ -100,6 +108,7 @@ function parseJson(rawJson: string): ParsedJSON[] {
       power: e.power == null ? undefined : get_num(e.power),
       wind: e.wind == null ? undefined : get_num(e.wind),
       cl16: get_num(e.cl16),
+      devstr: get_str(e.devstr),
     } as const;
   });
 }
@@ -154,6 +163,7 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
   );
 
   const windFieldNum = 0;
+  const devStrFieldNum = 1;
   fitWriter.writeMessage(
     "field_description",
     {
@@ -161,6 +171,19 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
       field_definition_number: windFieldNum,
       field_name: "Wind",
       fit_base_type_id: "float64",
+      units: "m/s",
+    },
+    null,
+    true
+  );
+
+  fitWriter.writeMessage(
+    "field_description",
+    {
+      developer_data_index: 0,
+      field_definition_number: devStrFieldNum,
+      field_name: "devstr",
+      fit_base_type_id: "string",
       units: "m/s",
     },
     null,
@@ -206,15 +229,19 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
     const position_long = fitWriter.latlng(v.lng);
     const position_lat = fitWriter.latlng(v.lat);
     const cycle_length16 = v.cl16;
-    const devInfo: FitDevInfo[] =
-      v.wind != null
-        ? [
-            {
-              field_num: windFieldNum,
-              value: v.wind,
-            } as const,
-          ]
-        : [];
+    const devInfo: FitDevInfo[] = [];
+    if (v.wind != null) {
+      devInfo.push({
+        field_num: windFieldNum,
+        value: v.wind,
+      });
+    }
+    if (v.devstr != null) {
+      devInfo.push({
+        field_num: devStrFieldNum,
+        value: v.devstr,
+      });
+    }
 
     fitWriter.writeMessage(
       "record",
@@ -299,6 +326,9 @@ function compare(name: string, json: ParsedJSON[], fit: FitFile) {
     check(js.power, ft.power, epsilon, "Power mismatch");
     check(js.wind, ft.Wind, epsilon, "Wind mismatch");
     check(js.cl16, ft.cycleLength16, epsilon, "Wind mismatch");
+    if (js.devstr !== ft.devstr) {
+      throw new Error(`devstr: '${js.devstr}' is not equal to '${ft.devstr}`);
+    }
   });
 }
 
