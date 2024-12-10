@@ -2,6 +2,10 @@
 
 All notable changes to the "@markw65/fit-file-writer" package will be documented in this file.
 
+### 0.1.5
+
+- Add support for `string` valued developer fields (thanks [@RafaelCENG](https://github.com/RafaelCENG))
+
 ### 0.1.4
 
 - Use Garmin's javascript sdk, rather than fit-file-parser, as the basis for generating our tables
