@@ -19,7 +19,7 @@
   "author": "markw65",
   "license": "MIT",
   "devDependencies": {
-    "@garmin/fitsdk": "file:garmin-fitsdk-markw65.tgz",
+    "@garmin/fitsdk": "^21.158.0",
     "@types/node": "^20.16.5",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "esbuild": "^0.21.5",
