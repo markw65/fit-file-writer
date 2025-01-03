@@ -2,6 +2,11 @@
 
 All notable changes to the "@markw65/fit-file-writer" package will be documented in this file.
 
+### 0.1.6
+
+- Add support for SubField types. This means you can now use names for fields like `device_info.product`, rather than having to lookup the number.
+- Allow both snake_case and camelCase names for enums, so that `device_info.device_type` can be specified as either `"bikePower"` or `"bike_power"` (or `11` if you prefer).
+
 ### 0.1.5
 
 - Add support for `string` valued developer fields (thanks [@RafaelCENG](https://github.com/RafaelCENG))
