@@ -412,7 +412,18 @@ export class FitWriter {
     if (typeof value === "string") {
       num = fitField?.[value];
       if (num == null) {
-        throw new Error(`Missing value ${value} in field ${defField.key}`);
+        if (field?.subFields.length) {
+          field.subFields.some((sf) => {
+            const ff: Record<string, number> | undefined =
+              fit_types[sf.type as FitRawTypes];
+            if (!ff) return false;
+            num = ff?.[value];
+            return num != null;
+          });
+        }
+        if (num == null) {
+          throw new Error(`Missing value ${value} in field ${defField.key}`);
+        }
       }
     } else if (typeof value === "number") {
       num = value;

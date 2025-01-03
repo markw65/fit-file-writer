@@ -149,6 +149,25 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
     true
   );
 
+  fitWriter.writeMessage("device_info", {
+    timestamp: start,
+    serial_number: 3395606202,
+    manufacturer: "garmin",
+    product: "fr955",
+    software_version: 6.75,
+    device_index: 0,
+    source_type: "local",
+  });
+
+  fitWriter.writeMessage("device_info", {
+    timestamp: start,
+    manufacturer: "ibike",
+    device_index: 1,
+    device_type: "bike_power",
+    ant_network: "antplus",
+    source_type: "antplus",
+  });
+
   fitWriter.writeMessage(
     "developer_data_id",
     {
