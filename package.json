@@ -1,6 +1,6 @@
 {
   "name": "@markw65/fit-file-writer",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Javascript Library for writing FitFiles",
   "main": "build/src/fit-encode.js",
   "types": "build/ts/src/fit-encode.d.ts",
