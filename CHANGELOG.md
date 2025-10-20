@@ -2,6 +2,10 @@
 
 All notable changes to the "@markw65/fit-file-writer" package will be documented in this file.
 
+### 0.1.7
+
+- Allow `Timestamp/253` as a field for any message. Fixes #11
+
 ### 0.1.6
 
 - Add support for SubField types. This means you can now use names for fields like `device_info.product`, rather than having to lookup the number.
