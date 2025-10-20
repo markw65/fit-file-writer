@@ -120,7 +120,15 @@ const fit_messages = Object.fromEntries(
     ] as const;
   })
 );
-
+const timestamp = fit_messages.record.fields.timestamp;
+if (!timestamp) {
+  throw new Error(`Missing timestamp field in record message`);
+}
+Object.values(fit_messages).forEach((mesg) => {
+  if (!mesg.fields.timestamp) {
+    mesg.fields.timestamp = timestamp;
+  }
+});
 console.log(
   `export const fit_messages = ${JSON.stringify(
     fit_messages,

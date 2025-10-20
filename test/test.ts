@@ -133,6 +133,21 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
       sport: "cycling",
     } as const;
   };
+  const split = (start: number, end: number) => {
+    const startSample = parsed[start];
+    const endSample = parsed[end] ?? parsed[end - 1];
+    return {
+      split_type: "ascentSplit",
+      timestamp: fitWriter.time(startSample.time),
+      start_time: fitWriter.time(startSample.time),
+      total_elapsed_time: elapsed_time(start, end),
+      total_timer_time: elapsed_time(start, end),
+      total_distance: endSample.dist - startSample.dist,
+      start_position_lat: fitWriter.latlng(startSample.lat),
+      start_position_long: fitWriter.latlng(startSample.lng),
+      total_ascent: Math.abs(endSample.ele - startSample.ele),
+    } as const;
+  };
 
   const start = fitWriter.time(parsed[0].time);
   fitWriter.writeMessage(
@@ -233,6 +248,12 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
     fitWriter.writeMessage(
       "lap",
       summary(start, end),
+      null,
+      i === laps.length - 1
+    );
+    fitWriter.writeMessage(
+      "split",
+      split(start, end),
       null,
       i === laps.length - 1
     );

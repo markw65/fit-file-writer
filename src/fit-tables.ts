@@ -6814,6 +6814,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   capabilities: {
@@ -6870,6 +6884,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -7212,6 +7240,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -7630,6 +7672,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   hrm_profile: {
@@ -7700,6 +7756,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -7818,6 +7888,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -8278,6 +8362,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   zones_target: {
@@ -8354,6 +8452,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   hr_zone: {
@@ -8402,6 +8514,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   power_zone: {
@@ -8444,6 +8570,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -8512,6 +8652,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   sport: {
@@ -8554,6 +8708,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -8742,6 +8910,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -15228,6 +15410,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   workout_step: {
@@ -16218,6 +16414,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   schedule: {
@@ -16363,6 +16573,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -16627,6 +16851,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -17063,6 +17301,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   file_capabilities: {
@@ -17147,6 +17399,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -17281,6 +17547,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   field_capabilities: {
@@ -17357,6 +17637,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   file_creator: {
@@ -17385,6 +17679,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -17593,6 +17901,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -18211,6 +18533,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   ant_rx: {
@@ -18461,6 +18797,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -18876,7 +19226,22 @@ export const fit_messages = {
   pad: {
     value: 105,
     name: "pad",
-    fields: {},
+    fields: {
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+    },
   },
   slave_device: {
     value: 106,
@@ -18956,6 +19321,20 @@ export const fit_messages = {
             ],
           },
         ],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
       },
     },
   },
@@ -19139,6 +19518,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -19507,6 +19900,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -21047,6 +21454,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   segment_id: {
@@ -21179,6 +21600,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   segment_leaderboard_entry: {
@@ -21283,6 +21718,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   segment_point: {
@@ -21381,6 +21830,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -21519,6 +21982,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   workout_session: {
@@ -21623,6 +22100,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   watchface_settings: {
@@ -21700,6 +22191,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -22913,6 +23418,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   video_title: {
@@ -22961,6 +23480,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   video_description: {
@@ -23003,6 +23536,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -23113,6 +23660,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   ohr_settings: {
@@ -23209,6 +23770,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   exd_data_field_configuration: {
@@ -23293,6 +23868,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -23453,6 +24042,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -23661,6 +24264,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   developer_data_id: {
@@ -23731,6 +24348,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -24525,6 +25156,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   max_met_data: {
@@ -24637,6 +25282,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -25250,6 +25909,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   dive_alarm: {
@@ -25438,6 +26111,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   exercise_title: {
@@ -25494,6 +26181,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -26886,6 +27587,20 @@ export const fit_messages = {
         hasComponents: false,
         subFields: [],
       },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
     },
   },
   split_summary: {
@@ -27082,6 +27797,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -27622,6 +28351,20 @@ export const fit_messages = {
         scale: 100,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -28548,6 +29291,20 @@ export const fit_messages = {
         scale: 1,
         offset: 0,
         units: "",
+        bits: [],
+        components: [],
+        isAccumulated: false,
+        hasComponents: false,
+        subFields: [],
+      },
+      timestamp: {
+        num: 253,
+        name: "timestamp",
+        type: "date_time",
+        array: "false",
+        scale: 1,
+        offset: 0,
+        units: "s",
         bits: [],
         components: [],
         isAccumulated: false,
@@ -29578,6 +30335,7 @@ export type FitMessageInputs = {
     time_created: number;
     number: number;
     product_name: string;
+    timestamp: number;
   };
   capabilities: {
     languages: number[];
@@ -29663,6 +30421,7 @@ export type FitMessageInputs = {
       | "wifi_verification"
       | "workoutDownload"
       | "workout_download";
+    timestamp: number;
   };
   device_settings: {
     active_time_zone: number;
@@ -29728,6 +30487,7 @@ export type FitMessageInputs = {
       | "portrait_flipped";
     tap_interface: "auto" | "off" | "on";
     tap_sensitivity: "high" | "low" | "medium";
+    timestamp: number;
   };
   user_profile: {
     friendly_name: string;
@@ -29891,6 +30651,7 @@ export type FitMessageInputs = {
     depth_setting: "metric" | "nautical" | "statute";
     dive_count: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   hrm_profile: {
     enabled: number;
@@ -29898,6 +30659,7 @@ export type FitMessageInputs = {
     log_hrv: number;
     hrm_ant_id_trans_type: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   sdm_profile: {
     enabled: number;
@@ -29908,6 +30670,7 @@ export type FitMessageInputs = {
     sdm_ant_id_trans_type: number;
     odometer_rollover: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   bike_profile: {
     name: string;
@@ -30168,6 +30931,7 @@ export type FitMessageInputs = {
     rear_gear: number[];
     shimano_di2_enabled: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   zones_target: {
     max_heart_rate: number;
@@ -30182,22 +30946,26 @@ export type FitMessageInputs = {
       | "percent_lthr"
       | "percent_max_hr";
     pwr_calc_type: "custom" | "percentFtp" | "percent_ftp";
+    timestamp: number;
   };
   hr_zone: {
     high_bpm: number;
     name: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   power_zone: {
     high_value: number;
     name: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   met_zone: {
     high_bpm: number;
     calories: number;
     fat_calories: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   sport: {
     sport:
@@ -30429,6 +31197,7 @@ export type FitMessageInputs = {
       | "wingsuit"
       | "yoga";
     name: string;
+    timestamp: number;
   };
   goal: {
     sport:
@@ -30678,6 +31447,7 @@ export type FitMessageInputs = {
     enabled: number;
     source: "auto" | "community" | "user";
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   session: {
     event:
@@ -33305,6 +34075,7 @@ export type FitMessageInputs = {
     pool_length_unit: "metric" | "nautical" | "statute";
     wkt_description: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   workout_step: {
     wkt_step_name: string;
@@ -33529,6 +34300,7 @@ export type FitMessageInputs = {
       | "watts_offset"
       | number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   schedule: {
     manufacturer:
@@ -34396,6 +35168,7 @@ export type FitMessageInputs = {
     completed: number;
     type: "course" | "workout";
     scheduled_time: number;
+    timestamp: number;
   };
   weight_scale: {
     weight: "calculating";
@@ -34660,6 +35433,7 @@ export type FitMessageInputs = {
       | "whitewater"
       | "wingsuit"
       | "yoga";
+    timestamp: number;
   };
   course_point: {
     timestamp: number;
@@ -34965,6 +35739,7 @@ export type FitMessageInputs = {
     version: number;
     part_number: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   file_capabilities: {
     type:
@@ -35002,6 +35777,7 @@ export type FitMessageInputs = {
     max_count: number;
     max_size: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   mesg_capabilities: {
     file:
@@ -35263,6 +36039,7 @@ export type FitMessageInputs = {
       | "num_per_file";
     count: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   field_capabilities: {
     file:
@@ -35518,10 +36295,12 @@ export type FitMessageInputs = {
     field_num: number;
     count: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   file_creator: {
     software_version: number;
     hardware_version: number;
+    timestamp: number;
   };
   blood_pressure: {
     systolic_pressure: number;
@@ -35553,6 +36332,7 @@ export type FitMessageInputs = {
     high_value: number;
     name: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   monitoring: {
     device_index: number;
@@ -36522,6 +37302,7 @@ export type FitMessageInputs = {
   };
   hrv: {
     time: number[];
+    timestamp: number;
   };
   ant_rx: {
     fractional_timestamp: number;
@@ -36565,6 +37346,7 @@ export type FitMessageInputs = {
     device_number: number;
     transmission_type: number;
     device_index: number;
+    timestamp: number;
   };
   length: {
     event:
@@ -36706,7 +37488,9 @@ export type FitMessageInputs = {
     resting_metabolic_rate: number;
     timestamp: number;
   };
-  pad: Record<string, never>;
+  pad: {
+    timestamp: number;
+  };
   slave_device: {
     manufacturer:
       | "1partcarbon"
@@ -37568,6 +38352,7 @@ export type FitMessageInputs = {
       | "vivosmart4"
       | "vivosmart5"
       | number;
+    timestamp: number;
   };
   connectivity: {
     bluetooth_enabled: number;
@@ -37583,6 +38368,7 @@ export type FitMessageInputs = {
     gps_ephemeris_download_enabled: number;
     incident_detection_enabled: number;
     grouptrack_enabled: number;
+    timestamp: number;
   };
   weather_conditions: {
     weather_report:
@@ -37805,6 +38591,7 @@ export type FitMessageInputs = {
     high_value: number;
     name: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   hr: {
     fractional_timestamp: number;
@@ -38792,6 +39579,7 @@ export type FitMessageInputs = {
     field_num: number;
     data: number[];
     part_index: number;
+    timestamp: number;
   };
   segment_id: {
     name: string;
@@ -38898,6 +39686,7 @@ export type FitMessageInputs = {
       | "doNotDelete"
       | "do_not_delete";
     selection_type: "starred" | "suggested";
+    timestamp: number;
   };
   segment_leaderboard_entry: {
     name: string;
@@ -38926,6 +39715,7 @@ export type FitMessageInputs = {
     segment_time: number;
     activity_id_string: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   segment_point: {
     position_lat: number;
@@ -38935,6 +39725,7 @@ export type FitMessageInputs = {
     leader_time: number[];
     enhanced_altitude: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   segment_file: {
     file_uuid: string;
@@ -38946,6 +39737,7 @@ export type FitMessageInputs = {
     leader_activity_id_string: string;
     default_race_leader: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   workout_session: {
     sport:
@@ -39181,11 +39973,13 @@ export type FitMessageInputs = {
     pool_length: number;
     pool_length_unit: "metric" | "nautical" | "statute";
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   watchface_settings: {
     mode: "analog" | "connectIq" | "connect_iq" | "digital" | "disabled";
     layout: "bold" | "minimal" | "modern" | "traditional" | number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   gps_metadata: {
     timestamp_ms: number;
@@ -39317,16 +40111,19 @@ export type FitMessageInputs = {
     url: string;
     hosting_provider: string;
     duration: number;
+    timestamp: number;
   };
   video_title: {
     message_count: number;
     text: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   video_description: {
     message_count: number;
     text: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   video_clip: {
     clip_number: number;
@@ -39336,6 +40133,7 @@ export type FitMessageInputs = {
     end_timestamp_ms: number;
     clip_start: number;
     clip_end: number;
+    timestamp: number;
   };
   ohr_settings: {
     enabled: "auto" | "off" | "on";
@@ -39363,6 +40161,7 @@ export type FitMessageInputs = {
       | "half_vertical_left_split"
       | "half_vertical_right_split";
     screen_enabled: number;
+    timestamp: number;
   };
   exd_data_field_configuration: {
     screen_index: number;
@@ -39389,6 +40188,7 @@ export type FitMessageInputs = {
       | "virtualPartner"
       | "virtual_partner";
     title: string;
+    timestamp: number;
   };
   exd_data_concept_configuration: {
     screen_index: number;
@@ -39710,6 +40510,7 @@ export type FitMessageInputs = {
       | "workoutStep"
       | "workout_step";
     is_signed: number;
+    timestamp: number;
   };
   field_description: {
     developer_data_index: number;
@@ -39963,6 +40764,7 @@ export type FitMessageInputs = {
       | "zonesTarget"
       | "zones_target";
     native_field_num: number;
+    timestamp: number;
   };
   developer_data_id: {
     developer_id: number[];
@@ -40277,6 +41079,7 @@ export type FitMessageInputs = {
       | "zwift_byte";
     developer_data_index: number;
     application_version: number;
+    timestamp: number;
   };
   magnetometer_data: {
     timestamp_ms: number;
@@ -40569,6 +41372,7 @@ export type FitMessageInputs = {
   stress_level: {
     stress_level_value: number;
     stress_level_time: number;
+    timestamp: number;
   };
   max_met_data: {
     update_time: number;
@@ -40810,6 +41614,7 @@ export type FitMessageInputs = {
       | "connected_gps"
       | "onboardGps"
       | "onboard_gps";
+    timestamp: number;
   };
   dive_settings: {
     name: string;
@@ -40931,6 +41736,7 @@ export type FitMessageInputs = {
       | "openCircuit"
       | "open_circuit";
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   dive_alarm: {
     depth: number;
@@ -40946,6 +41752,7 @@ export type FitMessageInputs = {
     repeating: number;
     speed: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   exercise_title: {
     exercise_category:
@@ -41003,6 +41810,7 @@ export type FitMessageInputs = {
     exercise_name: number;
     wkt_step_name: string;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   dive_summary: {
     reference_mesg:
@@ -41391,6 +42199,7 @@ export type FitMessageInputs = {
     start_elevation: number;
     total_moving_time: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   split_summary: {
     split_type:
@@ -41448,6 +42257,7 @@ export type FitMessageInputs = {
     total_calories: number;
     total_moving_time: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   hsa_body_battery_data: {
     processing_interval: number;
@@ -41512,6 +42322,7 @@ export type FitMessageInputs = {
     awakenings_count: number;
     interruptions_score: number;
     average_stress_during_sleep: number;
+    timestamp: number;
   };
   hrv_status_summary: {
     weekly_average: number;
@@ -41647,6 +42458,7 @@ export type FitMessageInputs = {
     repeating: number;
     speed: number;
     message_index: { value: number; options?: ("reserved" | "selected")[] };
+    timestamp: number;
   };
   skin_temp_overnight: {
     local_timestamp: number;
