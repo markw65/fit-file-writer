@@ -366,12 +366,18 @@ export class FitWriter {
       let size = -1;
       switch (defField.base_type) {
         case "byte":
+        case "uint8":
+        case "uint8z":
           size = 1;
           break;
         case "word":
+        case "uint16":
+        case "uint16z":
           size = 2;
           break;
         case "long":
+        case "uint32":
+        case "uint32z":
           size = 4;
           break;
         default:
@@ -387,21 +393,27 @@ export class FitWriter {
         );
       }
 
-      value.forEach((v) => {
-        switch (defField.base_type) {
-          case "byte":
-            this.byte(v);
-            break;
-          case "word":
-            this.word(v);
-            break;
-          case "long":
-            this.long(v);
-            break;
-          default:
-            throw new Error(
-              `Unexpected base type for array: ${defField.base_type}`
-            );
+    value.forEach((v) => {
+      switch (defField.base_type) {
+        case "byte":
+        case "uint8":
+        case "uint8z":
+          this.byte(v);
+          break;
+        case "word":
+        case "uint16":
+        case "uint16z":
+          this.word(v);
+          break;
+        case "long":
+        case "uint32":
+        case "uint32z":
+          this.long(v);
+          break;
+        default:
+          throw new Error(
+            `Unexpected base type for array: ${defField.base_type}`
+          );
         }
       });
       return;
