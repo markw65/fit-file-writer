@@ -2,6 +2,10 @@
 
 All notable changes to the "@markw65/fit-file-writer" package will be documented in this file.
 
+### 0.1.8
+
+- Support more base types in arrays. Fixes #12
+
 ### 0.1.7
 
 - Allow `Timestamp/253` as a field for any message. Fixes #11
@@ -18,7 +22,6 @@ All notable changes to the "@markw65/fit-file-writer" package will be documented
 ### 0.1.4
 
 - Use Garmin's javascript sdk, rather than fit-file-parser, as the basis for generating our tables
-
   - this ensures that we support all fields
   - allowed me to add support for fields with multiple components, and to automatically substitute "preferred" fields, such as `enhanced_speed` for `speed` (under a new option, `usePreferredFields`)
 
