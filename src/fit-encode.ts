@@ -8,6 +8,7 @@ import {
   fit_messages,
   fit_types,
 } from "./fit-tables";
+import { isArrayField } from "./utils";
 
 type keysOf<o> = {
   [K in keyof o]: K extends string ? K : K extends number ? `${K}` : never;
@@ -51,7 +52,7 @@ function baseTypeInfo(
   value: unknown,
   field?: ExtFitField
 ): { type: FitBaseTypes; size: number } {
-  let isArray = field?.array === "true";
+  let isArray = isArrayField(field);
   let size;
   if (field?.hasComponents && field.components.length >= 2) {
     size = field.bits.reduce((t, b) => t + b, 0);
@@ -393,27 +394,27 @@ export class FitWriter {
         );
       }
 
-    value.forEach((v) => {
-      switch (defField.base_type) {
-        case "byte":
-        case "uint8":
-        case "uint8z":
-          this.byte(v);
-          break;
-        case "word":
-        case "uint16":
-        case "uint16z":
-          this.word(v);
-          break;
-        case "long":
-        case "uint32":
-        case "uint32z":
-          this.long(v);
-          break;
-        default:
-          throw new Error(
-            `Unexpected base type for array: ${defField.base_type}`
-          );
+      value.forEach((v) => {
+        switch (defField.base_type) {
+          case "byte":
+          case "uint8":
+          case "uint8z":
+            this.byte(v);
+            break;
+          case "word":
+          case "uint16":
+          case "uint16z":
+            this.word(v);
+            break;
+          case "long":
+          case "uint32":
+          case "uint32z":
+            this.long(v);
+            break;
+          default:
+            throw new Error(
+              `Unexpected base type for array: ${defField.base_type}`
+            );
         }
       });
       return;
@@ -556,7 +557,7 @@ export class FitWriter {
         let result = k as string;
         const field = globalMessage.fields[k];
         if (!field.hasComponents || field.components.length <= 1) {
-          if (field?.array === "true") {
+          if (isArrayField(field)) {
             const value = messageInfo[k as keyof typeof messageInfo];
             if (field?.type === "string") {
               if (typeof value !== "string") {
@@ -607,8 +608,8 @@ export class FitWriter {
                   ? "uint8"
                   : "enum"
                 : type._min >= 1
-                ? "uint8z"
-                : "";
+                  ? "uint8z"
+                  : "";
           } else if (type._max <= 0xffff) {
             size = 2;
             base_type = "uint16";
