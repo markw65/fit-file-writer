@@ -1,6 +1,33 @@
-import * as fs from "node:fs/promises";
-import { FitDevInfo, FitWriter } from "src/fit-encode";
 import { Decoder, Stream } from "@garmin/fitsdk";
+import * as fs from "node:fs/promises";
+import {
+  FitDevInfo,
+  FitWriter,
+  fit_messages,
+  UserMessageMap,
+} from "@markw65/fit-file-writer";
+
+const user_messages = {
+  split: {
+    fields: {
+      foobar: {
+        ...fit_messages.split.fields.split_type,
+      },
+      avg_heart_rate: {
+        ...fit_messages.session.fields.avg_heart_rate,
+        num: 15,
+      },
+    },
+  },
+  new_message: {
+    value: 4242,
+    fields: {
+      speed: { ...fit_messages.record.fields.speed },
+      message_index: { ...fit_messages.split.fields.message_index },
+      product_name: { ...fit_messages.file_id.fields.product_name },
+    },
+  },
+} as const satisfies UserMessageMap;
 
 export type FitRecord = {
   timestamp: Date;
@@ -42,7 +69,9 @@ type ParsedJSON = {
   devstr?: string;
 };
 
-function parseFit(data: DataView) {
+async function parseFit(
+  data: DataView
+): Promise<Record<string, unknown> & FitFile> {
   const stream = new Stream(
     data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
   );
@@ -52,13 +81,21 @@ function parseFit(data: DataView) {
   const { messages, errors } = decoder.read({
     //expandComponents: false,
     //mergeHeartRates: false,
+    includeUnknownData: true,
   });
 
   if (errors.length) {
     return Promise.reject(errors);
   }
   const { recordMesgs, fieldDescriptionMesgs } = messages as FitFile;
-  return Promise.resolve({
+  const msgFields = Object.fromEntries(
+    Object.entries(messages).filter(
+      ([name]) => name.endsWith("Mesgs") || !isNaN(Number(name))
+    )
+  );
+
+  return {
+    ...msgFields,
     recordMesgs: recordMesgs.map((mesg) => {
       const { developerFields, ...rest } = mesg;
       developerFields &&
@@ -69,7 +106,7 @@ function parseFit(data: DataView) {
       return { ...rest };
     }),
     fieldDescriptionMesgs,
-  });
+  };
 }
 
 function parseJson(rawJson: string): ParsedJSON[] {
@@ -133,11 +170,12 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
       sport: "cycling",
     } as const;
   };
-  const split = (start: number, end: number) => {
+  const split = (i: number, start: number, end: number) => {
     const startSample = parsed[start];
     const endSample = parsed[end] ?? parsed[end - 1];
     return {
       split_type: "ascentSplit",
+      message_index: { value: i },
       timestamp: fitWriter.time(startSample.time),
       start_time: fitWriter.time(startSample.time),
       total_elapsed_time: elapsed_time(start, end),
@@ -146,6 +184,10 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
       start_position_lat: fitWriter.latlng(startSample.lat),
       start_position_long: fitWriter.latlng(startSample.lng),
       total_ascent: Math.abs(endSample.ele - startSample.ele),
+      avg_heart_rate:
+        (60 *
+          parsed.slice(start, end).reduce((t, sample) => t + sample.hr, 0)) /
+        (end - start),
     } as const;
   };
 
@@ -195,6 +237,12 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
     null,
     true
   );
+
+  fitWriter.writeCustomMessage(user_messages, "new_message", {
+    speed: 42,
+    message_index: { value: 0, options: ["reserved"] },
+    product_name: "my product",
+  });
 
   const windFieldNum = 0;
   const devStrFieldNum = 1;
@@ -251,9 +299,10 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
       null,
       i === laps.length - 1
     );
-    fitWriter.writeMessage(
+    fitWriter.writeCustomMessage(
+      user_messages,
       "split",
-      split(start, end),
+      split(i, start, end),
       null,
       i === laps.length - 1
     );
@@ -384,6 +433,34 @@ async function processJson(jsonFileName: string) {
       parseFit(rawFit),
       fs.writeFile(name, rawFit),
     ]);
+
+    const newMesgs = fit[4242];
+    if (
+      !Array.isArray(newMesgs) ||
+      newMesgs.length !== 1 ||
+      !newMesgs[0] ||
+      typeof newMesgs[0] !== "object" ||
+      newMesgs[0][fit_messages.record.fields.speed.num] !== 42000 ||
+      newMesgs[0][fit_messages.split.fields.message_index.num] !== 28672 ||
+      newMesgs[0][fit_messages.file_id.fields.product_name.num] !== "my product"
+    ) {
+      throw new Error("Failed to read back custom messages");
+    }
+
+    const splitMesgs = fit.splitMesgs;
+    if (
+      !Array.isArray(splitMesgs) ||
+      !splitMesgs.length ||
+      splitMesgs.some(
+        (splitMsg) =>
+          !splitMsg ||
+          typeof splitMsg !== "object" ||
+          typeof splitMsg[15] !== "number"
+      )
+    ) {
+      throw new Error("Custom field in splitMesgs not found");
+    }
+
     compare(name, json, fit);
   };
   await process(false);

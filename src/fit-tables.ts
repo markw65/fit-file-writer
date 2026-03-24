@@ -15,6 +15,11 @@ export type FitMessageMap = Record<
   string,
   { value: number; name: string; fields: Record<string, ExtFitField> }
 >;
+export type UserMessage = {
+  value?: number;
+  fields: Record<string, ExtFitField>;
+};
+export type UserMessageMap = Record<string, UserMessage>;
 export const fit_types = {
   file: {
     device: 1,

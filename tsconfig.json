@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "rootDir": "./",
     "baseUrl": "./",
     "outDir": "build/ts",
-    "module": "esnext",
+    "module": "nodenext",
     "target": "esnext",
     "checkJs": true /* Type check .js files. */,
     "lib": ["esnext"],
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "allowSyntheticDefaultImports": true,
     "noImplicitReturns": true,
     "sourceMap": true,

@@ -156,6 +156,7 @@ fs.readFile("package.json", "utf-8").then(async (pkg) => {
     minify: releaseBuild,
     logLevel: "silent",
     treeShaking: true,
+    external: ["@markw65/fit-file-writer"],
   };
   if (process.argv.includes("--watch")) {
     const mainCtx = await esbuild.context(mainConfig);

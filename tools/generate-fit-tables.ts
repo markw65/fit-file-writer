@@ -19,6 +19,10 @@ console.log("export type ExtFitField = FitField & { type: FitExtraTypes };");
 console.log(
   "export type FitMessageMap = Record<string, {value:number; name:string; fields:Record<string,ExtFitField>}>;"
 );
+console.log(
+  "export type UserMessage = { value?: number; fields: Record<string, ExtFitField> };"
+);
+console.log("export type UserMessageMap = Record<string, UserMessage>;");
 
 function deCamelize(s: unknown): unknown {
   if (typeof s === "string") {

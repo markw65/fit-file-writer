@@ -5,6 +5,8 @@ import {
   FitMessageInputs,
   FitMessageMap,
   FitRawTypes,
+  UserMessage,
+  UserMessageMap,
   fit_messages,
   fit_types,
 } from "./fit-tables";
@@ -14,12 +16,68 @@ type keysOf<o> = {
   [K in keyof o]: K extends string ? K : K extends number ? `${K}` : never;
 }[keyof o];
 
+export { fit_messages, UserMessageMap };
+
 export function keysOf<o extends object>(o: o) {
   return Object.keys(o) as keysOf<o>[];
 }
 
-type FitMessages = typeof fit_messages;
-type MessageKeys = keyof FitMessages;
+type Exact<Target, T> = {
+  [K in keyof T]: K extends keyof Target ? T[K] : never;
+};
+
+type Merge<T, U> = Omit<T, keyof U> & U;
+
+type FitTypes = typeof fit_types;
+type FitTypeKeys = keyof FitTypes;
+
+type ExcludeSpecial<T, E extends string = never> = Exclude<
+  T,
+  "_min" | "_max" | `${number}` | E
+>;
+
+type TypeFromFitType<T extends FitTypeKeys> = FitTypes[T] extends {
+  mask: number;
+}
+  ? {
+      value: number;
+      options?: ExcludeSpecial<keyof FitTypes[T], "mask">[];
+    }
+  : ExcludeSpecial<keyof FitTypes[T]>;
+
+type TypeFromField<F extends ExtFitField | undefined> = F extends ExtFitField
+  ? F["base_type"] extends "string"
+    ? string
+    : F["array"] extends true
+      ? number[]
+      : F["type"] extends FitTypeKeys
+        ? TypeFromFitType<F["type"]>
+        : number
+  : undefined;
+
+type TypeFromMessage<M extends UserMessage> = {
+  [K in keyof M["fields"]]: TypeFromField<M["fields"][K]>;
+};
+
+type TypeFromMessages<M extends UserMessageMap> = {
+  [K in keyof M]: TypeFromMessage<M[K]>;
+};
+
+type FitMessages<UserMessages> = {
+  [K in
+    | keyof FitMessageInputs
+    | keyof UserMessages]: K extends keyof FitMessageInputs
+    ? K extends keyof UserMessages
+      ? Merge<FitMessageInputs[K], UserMessages[K]>
+      : FitMessageInputs[K]
+    : K extends keyof UserMessages
+      ? UserMessages[K]
+      : never;
+};
+
+type FitMessageTypes<U extends UserMessageMap | null> = U extends UserMessageMap
+  ? FitMessages<TypeFromMessages<U>>
+  : FitMessageInputs;
 
 export type FitDevInfo = {
   field_num: number;
@@ -39,7 +97,7 @@ type LocalDefinitionField = {
 };
 
 type LocalDefinition = {
-  global: MessageKeys;
+  global: string;
   local: number;
   localCompressed: number;
   hasTimestamp: boolean;
@@ -512,9 +570,16 @@ export class FitWriter {
   // exist for this message, create one.
   // If lastUse is true, the local definition will be discarded
   // after writing the message (so that the local id can be re-used)
-  writeMessage<T extends MessageKeys>(
+  writeCustomMessage<
+    S extends UserMessageMap | null,
+    T extends
+      | keyof FitMessageInputs
+      | (S extends UserMessageMap ? keyof FitMessageTypes<S> : never),
+    U extends Partial<FitMessageTypes<S>[T]>,
+  >(
+    userMessages: S,
     messageType: T,
-    messageInfo: Partial<FitMessageInputs[T]>,
+    messageInfo: U & Exact<FitMessageTypes<S>[T], U>,
     devInfo: FitDevInfo[] | null = null,
     lastUse = false
   ) {
@@ -532,7 +597,38 @@ export class FitWriter {
         this.localDefs[index] = "";
       }
     };
-    const globalMessage: FitMessageMap[T] = fit_messages[messageType];
+    const getGlobalMessage = () => {
+      if (messageType in fit_messages) {
+        const base_msg = fit_messages[messageType as keyof typeof fit_messages];
+        if (!userMessages || !(messageType in userMessages)) {
+          return base_msg;
+        }
+        return {
+          ...base_msg,
+          ...userMessages[messageType],
+          fields: {
+            ...base_msg.fields,
+            ...userMessages[messageType].fields,
+          },
+        };
+      }
+      if (!userMessages || !(messageType in userMessages)) {
+        throw new Error(`Message type '${messageType}' not found`);
+      }
+      const msg = { ...userMessages[messageType], name: messageType };
+      if (msg.value == null) {
+        throw new Error(
+          `Custom message '${messageType}' is missing a value field`
+        );
+      }
+      return msg as typeof msg & { value: number };
+    };
+    const globalMessage = getGlobalMessage();
+    const globalMessageFields = globalMessage.fields as Record<
+      string,
+      ExtFitField
+    >;
+
     const compressedTimestamp =
       !this.options.noCompressedTimestamps &&
       this.lastTimeStamp != null &&
@@ -548,14 +644,19 @@ export class FitWriter {
         messageInfo[k as keyof typeof messageInfo] != null
     );
     keys.sort((a, b) => {
-      const va = globalMessage.fields[a].num;
-      const vb = globalMessage.fields[b].num;
+      const va = globalMessageFields[a]?.num;
+      const vb = globalMessageFields[b]?.num;
+      if (va == null || vb == null) {
+        throw new Error(
+          `Invalid field: '${va == null ? a : b}' for message '${messageType}'`
+        );
+      }
       return va - vb;
     });
     const definitionKey = `${messageType}:${keys
       .map((k) => {
         let result = k as string;
-        const field = globalMessage.fields[k];
+        const field = globalMessageFields[k];
         if (!field.hasComponents || field.components.length <= 1) {
           if (isArrayField(field)) {
             const value = messageInfo[k as keyof typeof messageInfo];
@@ -701,7 +802,7 @@ export class FitWriter {
         : definition.local;
     this.byte(header);
     if (messageType === "field_description") {
-      const fieldDescMessage = messageInfo as Partial<
+      const fieldDescMessage = messageInfo as unknown as Partial<
         FitMessageInputs["field_description"]
       >;
       const type_id = fieldDescMessage.fit_base_type_id;
@@ -760,5 +861,23 @@ export class FitWriter {
         this.nextLocalDef = definition.local;
       }
     }
+  }
+
+  writeMessage<
+    T extends keyof FitMessageInputs,
+    U extends Partial<FitMessageInputs[T]>,
+  >(
+    messageType: T,
+    messageInfo: U & Exact<FitMessageInputs[T], U>,
+    devInfo: FitDevInfo[] | null = null,
+    lastUse = false
+  ) {
+    this.writeCustomMessage(
+      null,
+      messageType,
+      messageInfo as never,
+      devInfo,
+      lastUse
+    );
   }
 }

@@ -4,6 +4,12 @@
   "description": "Javascript Library for writing FitFiles",
   "main": "build/src/fit-encode.js",
   "types": "build/ts/src/fit-encode.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/ts/src/fit-encode.d.ts",
+      "default": "./build/src/fit-encode.js"
+    }
+  },
   "files": [
     "CHANGELOG.md",
     "build/src/fit-encode.js",
