@@ -20,16 +20,19 @@
     "build-debug": "node esbuild.mjs",
     "build-release": "node esbuild.mjs --release",
     "prepack": "node esbuild.mjs --release",
-    "watch": "node esbuild.mjs --watch"
+    "watch": "node esbuild.mjs --watch",
+    "refresh-undocumented": "node build/tools/refresh-undocumented-messages.js | prettier --parser typescript > build/tools/undocumented.ts && mv build/tools/undocumented.ts src",
+    "generate-fit-tables": "node build/tools/generate-fit-tables.js | prettier --parser typescript > build/tools/fit-tables.ts && mv build/tools/fit-tables.ts src"
   },
   "author": "markw65",
   "license": "MIT",
   "devDependencies": {
     "@garmin/fitsdk": "^21.195.0",
     "@types/node": "^20.16.5",
-    "@typescript-eslint/eslint-plugin": "^7.13.1",
-    "esbuild": "^0.21.5",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
+    "esbuild": "^0.27.4",
     "eslint": "^8.57.0",
+    "prettier": "^3.8.1",
     "typescript": "^5.6.2"
   },
   "keywords": [

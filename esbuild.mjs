@@ -140,6 +140,7 @@ fs.readFile("package.json", "utf-8").then(async (pkg) => {
     entryPoints: [
       "src/fit-encode.ts",
       "tools/generate-fit-tables.ts",
+      "tools/refresh-undocumented-messages.ts",
       "test/test.ts",
     ],
     bundle: true,

@@ -2,7 +2,7 @@ declare module "@garmin/fitsdk" {
   export interface BaseFitField {
     name: string;
     type: string;
-    base_type: string;
+    base_type?: string;
     array?: true | false | undefined;
     scale: number | number[];
     offset: number | number[];

@@ -8,17 +8,6 @@ import {
 } from "@markw65/fit-file-writer";
 
 const user_messages = {
-  split: {
-    fields: {
-      foobar: {
-        ...fit_messages.split.fields.split_type,
-      },
-      avg_heart_rate: {
-        ...fit_messages.session.fields.avg_heart_rate,
-        num: 15,
-      },
-    },
-  },
   new_message: {
     value: 4242,
     fields: {
@@ -315,8 +304,7 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
       devInfo,
       i === laps.length - 1
     );
-    fitWriter.writeCustomMessage(
-      user_messages,
+    fitWriter.writeMessage(
       "split",
       split(i, start, end),
       null,
