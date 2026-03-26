@@ -81,7 +81,7 @@ type FitMessageTypes<U extends UserMessageMap | null> = U extends UserMessageMap
 
 export type FitDevInfo = {
   field_num: number;
-  value: number | string;
+  value: number | number[] | string;
 };
 
 const crc_table = [
@@ -94,6 +94,7 @@ type LocalDefinitionField = {
   size: number;
   base_type: string;
   info: [number, number, number];
+  array?: number;
 };
 
 type LocalDefinition = {
@@ -108,9 +109,15 @@ type LocalDefinition = {
 function baseTypeInfo(
   type: FitExtraTypes,
   value: unknown,
-  field?: ExtFitField
-): { type: FitBaseTypes; size: number } {
-  let isArray = isArrayField(field);
+  field?: ExtFitField | number
+): { type: FitBaseTypes; size: number; array: number } {
+  let isArray;
+  if (typeof field === "number") {
+    isArray = field;
+    field = undefined;
+  } else {
+    isArray = isArrayField(field);
+  }
   let size;
   if (field?.hasComponents && field.components.length >= 2) {
     size = field.bits.reduce((t, b) => t + b, 0);
@@ -127,7 +134,7 @@ function baseTypeInfo(
       case "uint8":
       case "uint16":
       case "uint32":
-        return { type, size };
+        return { type, size, array: 0 };
     }
     throw new Error(`Unexpected type '${type}' for component field`);
   }
@@ -167,13 +174,20 @@ function baseTypeInfo(
     default:
       throw new Error(`Unexpected fit type ${type}`);
   }
+  let array = 0;
   if (isArray) {
     if (!Array.isArray(value)) {
       throw new Error(`expected an array`);
     }
-    size *= value.length;
+    array = value.length;
+    if (typeof isArray === "number" && isArray !== array) {
+      throw new Error(
+        `Expected an array of length ${isArray}, but got ${array}`
+      );
+    }
+    size *= array;
   }
-  return { type, size };
+  return { type, size, array };
 }
 
 const timestampId = fit_messages.record.fields.timestamp.num;
@@ -193,7 +207,7 @@ export class FitWriter {
   private scratch = new DataView(new ArrayBuffer(8));
   private devFieldTypes = new Map<
     number,
-    { base_type: FitBaseTypes; developer_data_index: number }
+    { base_type: FitBaseTypes; developer_data_index: number; array?: number }
   >();
   private lastTimeStamp: number | null | undefined;
   private options: FitWriterOptions;
@@ -312,12 +326,12 @@ export class FitWriter {
     return this;
   }
 
-  private dev_field_key(field_num: number, value: number | string) {
+  private dev_field_key(field_num: number, value: number | number[] | string) {
     const fieldInfo = this.devFieldTypes.get(field_num);
     if (fieldInfo == null) {
       throw new Error(`Missing definition for developer field ${field_num}`);
     }
-    const { size } = baseTypeInfo(fieldInfo.base_type, value);
+    const { size } = baseTypeInfo(fieldInfo.base_type, value, fieldInfo.array);
     return `dev-field-${field_num}-${size}`;
   }
 
@@ -697,6 +711,7 @@ export class FitWriter {
           hasTimestamp = true;
           if (localCompressed >= 0) return [];
         }
+        let array = 0;
         let size = -1;
         let base_type: FitBaseTypes | "" = "";
         const type = fit_types[field.type as FitRawTypes];
@@ -719,7 +734,11 @@ export class FitWriter {
             base_type = "uint32";
           }
         } else {
-          ({ type: base_type, size } = baseTypeInfo(
+          ({
+            type: base_type,
+            size,
+            array,
+          } = baseTypeInfo(
             field.type,
             messageInfo[key as keyof typeof messageInfo],
             field
@@ -742,6 +761,7 @@ export class FitWriter {
           size,
           base_type,
           info: [field.num, size, base_type_index],
+          array,
         } satisfies LocalDefinitionField;
       });
       definition = {
@@ -758,12 +778,17 @@ export class FitWriter {
                 `Missing definition for developer field ${d.field_num}`
               );
             }
-            const { size, type } = baseTypeInfo(fieldInfo.base_type, d.value);
+            const { size, type, array } = baseTypeInfo(
+              fieldInfo.base_type,
+              d.value,
+              fieldInfo.array
+            );
             return {
               key: d.field_num.toString(),
               base_type: type,
               size,
               info: [d.field_num, size, fieldInfo.developer_data_index],
+              array,
             };
           }) ?? [],
       };
@@ -832,6 +857,7 @@ export class FitWriter {
       this.devFieldTypes.set(field_no, {
         base_type,
         developer_data_index,
+        array: fieldDescMessage.array,
       });
     }
     definition.fields.forEach((defField) => {

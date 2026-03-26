@@ -271,6 +271,21 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
     null,
     true
   );
+  fitWriter.writeMessage(
+    "field_description",
+    {
+      developer_data_index: 0,
+      field_definition_number: 2,
+      fit_base_type_id: "uint16",
+      array: 5,
+      scale: 10,
+      offset: 0,
+      field_name: "HandleForceCurve",
+      units: "N",
+    },
+    null,
+    true
+  );
 
   fitWriter.writeMessage(
     "activity",
@@ -293,10 +308,11 @@ function makeFit(parsed: ParsedJSON[], useCompressedSpeedDistance: boolean) {
   ];
   laps.forEach((start, i) => {
     const end = laps[i + 1] ?? parsed.length;
+    const devInfo: FitDevInfo[] = [{ field_num: 2, value: [1, 2, 3, 4, 5] }];
     fitWriter.writeMessage(
       "lap",
       summary(start, end),
-      null,
+      devInfo,
       i === laps.length - 1
     );
     fitWriter.writeCustomMessage(
