@@ -161,7 +161,11 @@ fs.readFile("package.json", "utf-8").then(async (pkg) => {
     const mainCtx = await esbuild.context(mainConfig);
     await Promise.all([
       mainCtx.watch(),
-      spawnByLine(npx, tscCommand.concat(["--watch"]), logger),
+      spawnByLine(
+        npx,
+        tscCommand.concat(["--watch", "--preserveWatchOutput"]),
+        logger
+      ),
     ]);
   } else {
     activate(true);
