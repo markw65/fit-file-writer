@@ -2,6 +2,13 @@
 
 All notable changes to the "@markw65/fit-file-writer" package will be documented in this file.
 
+### 0.1.9
+
+- Include all messages, fields and types from Garmin Sdk-21.195.0.
+- Adds support for custom messages. If you need to write a message or field that isn't supported by `fit-file-writer`, you can pass a description to FitWriter#writeCustomMessage.
+- Adds support for arrays in developer messages. Fixes #15
+- Adds support for all "undocumented" fields, messages and types described [here](https://docs.google.com/spreadsheets/d/1x34eRAZ45nbi3U3GyANotgmoQfj0fR49wBxmL-oLogc/edit?gid=164559909#gid=164559909). Fixes #14
+
 ### 0.1.8
 
 - Support more base types in arrays. Fixes #12
